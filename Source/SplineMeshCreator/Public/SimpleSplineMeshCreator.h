@@ -40,7 +40,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Mesh components", meta = (ToolTip = "The transform for the connector for small edits", MakeEditWidget = true))
 	FTransform connectorTransform;
 
-
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Generation Properties", meta = (ToolTip = "Spline Mesh collision profile"))
 	TEnumAsByte<ECollisionEnabled::Type> collisionProfile = ECollisionEnabled::QueryAndPhysics;
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Generation Properties", meta = (ToolTip = "Whether or not to sperate meshes by Spline Points or by lenght"))

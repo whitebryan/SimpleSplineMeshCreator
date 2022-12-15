@@ -13,13 +13,13 @@ ASimpleSplineMeshCreator::ASimpleSplineMeshCreator()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 	splineToFollow = CreateDefaultSubobject<USplineComponent>("MySpline");
-
-	mainMesh = CreateDefaultSubobject<UStaticMesh>("DefaultBox");
-	connectorMesh = CreateDefaultSubobject<UStaticMesh>("DefaultBox2");
 }
 
 void ASimpleSplineMeshCreator::processSplineChanges()
 {
+	if(!IsValid(connectorMesh) || !IsValid(mainMesh))
+		return;
+
 	//Finding the last inddex for our for loop
 	int finalIndex = splineToFollow->GetNumberOfSplinePoints() - 2;
 
@@ -37,16 +37,16 @@ void ASimpleSplineMeshCreator::processSplineChanges()
 	//Start spawning meshes along splineToFollow
 	for (int i = 0; i <= finalIndex; ++i)
 	{
-		USplineMeshComponent* newSplineMesh = NewObject<USplineMeshComponent>(this);
-		newSplineMesh->CreationMethod = EComponentCreationMethod::UserConstructionScript;
-		newSplineMesh->LDMaxDrawDistance = maxDrawDistance;
-
-		//Setting vars based off creator setttings
-		newSplineMesh->SetVisibility(!setInvisible);
+		USplineMeshComponent* newSplineMesh = NewObject<USplineMeshComponent>(this, USplineMeshComponent::StaticClass());
 		newSplineMesh->SetStaticMesh(mainMesh);
 		newSplineMesh->SetForwardAxis(mainAxis);
-		newSplineMesh->SetCollisionEnabled(collisionProfile);
+		newSplineMesh->CreationMethod = EComponentCreationMethod::UserConstructionScript;
+		newSplineMesh->Mobility = EComponentMobility::Static;
+		newSplineMesh->LDMaxDrawDistance = maxDrawDistance;
+		newSplineMesh->SetVisibility(!setInvisible);
 		FinishAndRegisterComponent(newSplineMesh);
+
+
 
 		FVector startPoint = getDistance(i, seperateBySplinePoints);
 		FVector startTangent = getTangent(i, seperateBySplinePoints);
@@ -55,6 +55,8 @@ void ASimpleSplineMeshCreator::processSplineChanges()
 		FVector endTangent = getTangent(i+1, seperateBySplinePoints);
 
 		newSplineMesh->SetStartAndEnd(startPoint, startTangent, endPoint, endTangent);
+
+		newSplineMesh->SetCollisionEnabled(collisionProfile);
 
 		//Place connector after new spline mesh is made
 		if (placeConnectors && !setInvisible)
@@ -67,10 +69,10 @@ void ASimpleSplineMeshCreator::processSplineChanges()
 			{
 				continue;
 			}
-
-			UStaticMeshComponent* newConnector = NewObject<UStaticMeshComponent>(this);
-			newConnector->CreationMethod = EComponentCreationMethod::UserConstructionScript;
+			UStaticMeshComponent* newConnector = NewObject<UStaticMeshComponent>(this, UStaticMeshComponent::StaticClass());
 			newConnector->SetStaticMesh(connectorMesh);
+			newConnector->CreationMethod = EComponentCreationMethod::UserConstructionScript;
+			newConnector->Mobility = EComponentMobility::Static;
 			newConnector->SetCachedMaxDrawDistance(maxDrawDistance);
 			newConnector->SetCollisionEnabled(collisionProfile);
 			FinishAndRegisterComponent(newConnector);
