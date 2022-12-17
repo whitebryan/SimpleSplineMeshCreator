@@ -21,7 +21,7 @@ void ASimpleSplineMeshCreator::processSplineChanges()
 		return;
 
 	//Finding the last inddex for our for loop
-	int finalIndex = splineToFollow->GetNumberOfSplinePoints() - 2;
+	int finalIndex = splineToFollow->GetNumberOfSplinePoints() - 1;
 
 	if (!seperateBySplinePoints)
 	{
@@ -69,6 +69,7 @@ void ASimpleSplineMeshCreator::processSplineChanges()
 			{
 				continue;
 			}
+
 			UStaticMeshComponent* newConnector = NewObject<UStaticMeshComponent>(this, UStaticMeshComponent::StaticClass());
 			newConnector->SetStaticMesh(connectorMesh);
 			newConnector->CreationMethod = EComponentCreationMethod::UserConstructionScript;
@@ -84,22 +85,21 @@ void ASimpleSplineMeshCreator::processSplineChanges()
 			if (i == 0)
 			{
 				newRot = UKismetMathLibrary::FindLookAtRotation(startPoint, endPoint);
-				newTransform = UKismetMathLibrary::MakeTransform(startPoint, UKismetMathLibrary::MakeRotator(0,0, connectorTransform.GetRotation().Z + newRot.Yaw), connectorTransform.GetScale3D());
 			}
 			else if (i == finalIndex)
 			{
-				newLoc = getDistance(i, seperateBySplinePoints);
-				newRot = UKismetMathLibrary::FindLookAtRotation(startPoint, endPoint);
-				newTransform = UKismetMathLibrary::MakeTransform(newLoc, UKismetMathLibrary::MakeRotator(0, 0, connectorTransform.GetRotation().Z + newRot.Yaw), connectorTransform.GetScale3D());
+				newRot = UKismetMathLibrary::FindLookAtRotation(startPoint, getDistance(i-1, seperateBySplinePoints));
 			}
-			else if(i != 0 && i != finalIndex)
+			else if (i != 0 && i != finalIndex)
 			{
-				newRot = UKismetMathLibrary::FindLookAtRotation(startPoint, endPoint);
-				newTransform = UKismetMathLibrary::MakeTransform(startPoint, UKismetMathLibrary::MakeRotator(0, 0, connectorTransform.GetRotation().Z + newRot.Yaw), connectorTransform.GetScale3D());
+				newLoc = getDistance(i-1, seperateBySplinePoints);
+				newRot = UKismetMathLibrary::FindLookAtRotation(newLoc, endPoint);
 			}
 
+			newRot = UKismetMathLibrary::FindLookAtRotation(startPoint, endPoint);
+			newTransform = UKismetMathLibrary::MakeTransform(startPoint, newRot + connectorTransform.Rotator(), connectorTransform.GetScale3D());
 			newTransform += connectorTransform;
-			newConnector->SetRelativeTransform(newTransform);
+			newConnector->SetWorldTransform(newTransform);
 		}
 	}
 }

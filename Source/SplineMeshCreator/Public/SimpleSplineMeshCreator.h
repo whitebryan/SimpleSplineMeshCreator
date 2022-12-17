@@ -51,7 +51,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Generation Properties", meta = (ToolTip = "Should there be a connector at the end of the spline"))
 	bool endConnector = true;
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Generation Properties", meta = (ToolTip = "Modifier to the meshes base lenght to force it to use more or less meshes when separating by length"))
-	float lengthModifier = 1.f;
+	float lengthModifier = 20.f;
 	float length = 1;
 
 
