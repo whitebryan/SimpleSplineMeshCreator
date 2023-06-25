@@ -25,7 +25,7 @@ protected:
 
 
 	//Visual components
-	UPROPERTY(BlueprintReadOnly, Category = "Mesh components", meta = (ToolTip = "The spline you want your mesh will follow"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Mesh components", meta = (ToolTip = "The spline you want your mesh will follow"))
 	USplineComponent* splineToFollow;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Mesh components", meta = (ToolTip = "The main mesh that will be placed along the spine"))
@@ -42,6 +42,8 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Generation Properties", meta = (ToolTip = "Spline Mesh collision profile"))
 	TEnumAsByte<ECollisionEnabled::Type> collisionProfile = ECollisionEnabled::QueryAndPhysics;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Generation Properties", meta = (ToolTip = "Spline Mesh collision channel responses"))
+	FCollisionResponseContainer collisionsResponses;
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Generation Properties", meta = (ToolTip = "Whether or not to sperate meshes by Spline Points or by lenght"))
 	bool seperateBySplinePoints = false;
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Generation Properties", meta = (ToolTip = "Whether or not to place connectorMeshes at connection points"))

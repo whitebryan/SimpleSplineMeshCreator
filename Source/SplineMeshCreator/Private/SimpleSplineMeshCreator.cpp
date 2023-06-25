@@ -57,6 +57,7 @@ void ASimpleSplineMeshCreator::processSplineChanges()
 		newSplineMesh->SetStartAndEnd(startPoint, startTangent, endPoint, endTangent);
 
 		newSplineMesh->SetCollisionEnabled(collisionProfile);
+		newSplineMesh->SetCollisionResponseToChannels(collisionsResponses);
 
 		//Place connector after new spline mesh is made
 		if (placeConnectors && !setInvisible)
