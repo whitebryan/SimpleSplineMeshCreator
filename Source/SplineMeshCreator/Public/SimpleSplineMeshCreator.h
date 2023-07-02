@@ -25,6 +25,12 @@ protected:
 
 
 	//Visual components
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Mesh components", meta = (ToolTip = "Actor with a spline component to copy from"))
+	AActor* actorToCopySplineFrom = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Mesh components", meta = (ToolTip = "If false will copy from the first found spline component otherwise will search for a spline with the tag below"))
+	bool bSplineTagged = false;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Mesh components", meta = (ToolTip = "The tag attached to the spline to copy", EditCondition="bSplineTagged"))
+	FName splineTag = "";
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Mesh components", meta = (ToolTip = "The spline you want your mesh will follow"))
 	USplineComponent* splineToFollow;
 

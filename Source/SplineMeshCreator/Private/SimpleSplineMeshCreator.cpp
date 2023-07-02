@@ -20,6 +20,37 @@ void ASimpleSplineMeshCreator::processSplineChanges()
 	if(!IsValid(connectorMesh) || !IsValid(mainMesh))
 		return;
 
+	if (IsValid(actorToCopySplineFrom))
+	{
+		USplineComponent* splineToCopy = nullptr;
+
+		if(bSplineTagged)
+		{
+			TArray<UActorComponent*> foundSplines = actorToCopySplineFrom->GetComponentsByTag(USplineComponent::StaticClass(), splineTag);
+			if (foundSplines.Num() != 0)
+			{
+				splineToCopy = Cast<USplineComponent>(foundSplines[0]);
+			}
+		}
+		else
+		{
+			splineToCopy = actorToCopySplineFrom->GetComponentByClass<USplineComponent>();
+		}
+
+		if (IsValid(splineToCopy))
+		{
+			splineToFollow->ClearSplinePoints();
+			splineToFollow->SetClosedLoop(splineToCopy->IsClosedLoop());
+			TArray<FVector> splinePoints;
+			for (int i = 0; i < splineToCopy->GetNumberOfSplinePoints(); ++i)
+			{
+				splinePoints.Add(splineToCopy->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::Local));
+			}
+
+			splineToFollow->SetSplinePoints(splinePoints, ESplineCoordinateSpace::Local);
+		}
+	}
+
 	//Finding the last inddex for our for loop
 	int finalIndex = splineToFollow->GetNumberOfSplinePoints() - 1;
 
